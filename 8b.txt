@@ -1,0 +1,103 @@
+8b. Develop a PHP program (with HTML/CSS) to sort the student records which are stored in the database using selection sort.  
+
+<?php
+// Database connection
+$conn = new mysqli("localhost", "root", "", "students");
+if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
+
+// Fetch data
+$result = $conn->query("SELECT * FROM students");
+$students = [];
+while ($row = $result->fetch_assoc()) {
+    $students[] = $row;
+}
+
+// Selection Sort Function
+function selectionSort(&$arr, $key)
+{
+    $n = count($arr);
+    for ($i = 0; $i < $n - 1; $i++) {
+        $min = $i;
+        for ($j = $i + 1; $j < $n; $j++) {
+            if ($arr[$j][$key] < $arr[$min][$key]) {
+                $min = $j;
+            }
+        }
+        // Swap
+        $temp = $arr[$i];
+        $arr[$i] = $arr[$min];
+        $arr[$min] = $temp;
+    }
+}
+
+selectionSort($students, 'name');
+?>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sorted Student Records</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 0 10px #ccc;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #007bff;
+            color: #fff;
+        }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Sorted Student Records by Name</h2>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>USN</th>
+            <th>Branch</th>
+            <th>Email</th>
+            <th>Address</th>
+        </tr>
+
+        <?php foreach ($students as $s): ?>
+            <tr>
+                <td><?= htmlspecialchars($s['id']) ?></td>
+                <td><?= htmlspecialchars($s['name']) ?></td>
+                <td><?= htmlspecialchars($s['usn']) ?></td>
+                <td><?= htmlspecialchars($s['branch']) ?></td>
+                <td><?= htmlspecialchars($s['email']) ?></td>
+                <td><?= htmlspecialchars($s['address']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+
+    </table>
+
+</body>
+</html>
